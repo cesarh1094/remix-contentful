@@ -5,12 +5,25 @@ import { Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration } from '@re
 import stylesheet from '~/tailwind.css';
 import NavBar from '~/components/NavBar';
 import { LoadingBar } from './components/LoadingBar';
+import rdtStyleSheel from 'remix-development-tools/index.css';
+import { withDevTools } from 'remix-development-tools';
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: stylesheet }];
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: stylesheet },
+  ...(process.env.NODE_ENV === 'development' ? [{ rel: 'stylesheet', href: rdtStyleSheel }] : []),
+];
 
 export const meta: MetaFunction = () => [];
 
-export default function App() {
+let AppExport = App;
+
+if (process.env.NODE_ENV === 'development') {
+  AppExport = withDevTools(AppExport);
+}
+
+export default AppExport;
+
+function App() {
   return (
     <html lang="en">
       <head>
